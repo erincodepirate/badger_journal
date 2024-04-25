@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from .models import Entry
 from django.contrib.auth.models import User
 
+from .models import Entry
 
 class UserSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=30)
