@@ -44,13 +44,14 @@ def entry_list(request):
     """
     user = request.user
     if request.method == 'GET':
-        entries = Entry.objects.all()
+        entries = Entry.objects.filter(user=user)
 
         serializer = EntrySerializer(entries, many=True)
 
         return JsonResponse(serializer.data, safe=False)
     elif request.method == 'POST':
         data = JSONParser().parse(request)
+        data['user'] = user
         serializer = EntrySerializer(data=data)
         if serializer.is_valid():
             serializer.save(user=user)
@@ -76,6 +77,12 @@ def entry_detail(request, pk):
         return JsonResponse({
             'status': status.HTTP_404_NOT_FOUND,
             'error': f'Entry with id {pk} not found.'
+        })
+    print(dir(entry))
+    if entry.user_id != user.id:
+        return JsonResponse({
+            'status': status.HTTP_401_UNAUTHORIZED,
+            'error': f'Entry does not belong to {user}.'
         })
 
     if request.method == 'GET':
