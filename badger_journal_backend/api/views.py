@@ -91,7 +91,7 @@ def entry_detail(request, pk):
             
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
-        serializer = EntrySerializer(data=data)
+        serializer = EntrySerializer(entry, data=data)
         if serializer.is_valid():
             serializer.save(user=user)
             return JsonResponse({
