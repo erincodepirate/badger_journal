@@ -51,7 +51,7 @@ def entry_list(request):
         return JsonResponse(serializer.data, safe=False)
     elif request.method == 'POST':
         data = JSONParser().parse(request)
-        data['user'] = user
+        data['user'] = user.username
         serializer = EntrySerializer(data=data)
         if serializer.is_valid():
             serializer.save(user=user)
@@ -69,7 +69,7 @@ def entry_list(request):
 def entry_detail(request, pk):
     """
     Return a single entry, update an entry or delete an entry
-    """ 
+    """
     user = request.user
     try:
         entry = Entry.objects.get(pk = pk)
@@ -78,7 +78,7 @@ def entry_detail(request, pk):
             'status': status.HTTP_404_NOT_FOUND,
             'error': f'Entry with id {pk} not found.'
         })
-    print(dir(entry))
+
     if entry.user_id != user.id:
         return JsonResponse({
             'status': status.HTTP_401_UNAUTHORIZED,
